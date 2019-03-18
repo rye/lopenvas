@@ -96,3 +96,10 @@ RUN cmake .; make; make install
 
 # STEP 7: Build gsa from source
 FROM gvmd AS gsa
+
+ENV GSA_ARCHIVE="gsa-7.0.3.tar.gz"
+ADD var/$GSA_ARCHIVE /opt
+
+RUN mv /opt/gsa-* /opt/gsa
+WORKDIR /opt/gsa
+RUN cmake .; make; make install
