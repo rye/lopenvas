@@ -17,6 +17,7 @@ fetch_intermediate() {
 
 fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.35.tar.gz"
 fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.4.tar.gz"
+fetch_intermediate "https://github.com/Kitware/CMake/releases/download/v3.14.0/cmake-3.14.0.tar.gz" "$ROOT/cmake-3.14.0.tar.gz"
 
 pushd "$ROOT"
 
