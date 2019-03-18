@@ -18,6 +18,10 @@ fetch_intermediate() {
 fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.35.tar.gz"
 fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.4.tar.gz"
 fetch_intermediate "https://github.com/Kitware/CMake/releases/download/v3.14.0/cmake-3.14.0.tar.gz" "$ROOT/cmake-3.14.0.tar.gz"
+fetch_intermediate "https://github.com/greenbone/gsa/archive/v7.0.3.tar.gz" "$ROOT/gsa-7.0.3.tar.gz"
+fetch_intermediate "https://github.com/greenbone/gvm-libs/archive/v9.0.3.tar.gz" "$ROOT/gvm-libs--9.0.3.tar.gz"
+fetch_intermediate "https://github.com/greenbone/gvmd/archive/v7.0.3.tar.gz" "$ROOT/gvmd-7.0.3.tar.gz"
+fetch_intermediate "https://github.com/greenbone/openvas-scanner/archive/v5.1.3.tar.gz" "$ROOT/openvas-scanner--5.1.3.tar.gz"
 
 pushd "$ROOT"
 
