@@ -3,16 +3,36 @@ FROM centos:7 AS centos-epel-build
 
 RUN yum install -y epel-release
 RUN yum install -y \
-       cmake \
-       curl \
-       file \
-       gcc-c++ \
-       gcc \
-       git \
-       glibc-devel \
-       make \
-       pkgconfig \
-       wget
+	bison \
+	cmake \
+	curl \
+	doxygen \
+	file \
+	gcc-c++ \
+	gcc \
+	git \
+	glib2-devel \
+	glibc-devel \
+	gnutls-devel \
+	gpgme-devel \
+	hiredis-devel \
+	libgcrypt-devel \
+	libgpg-error-devel \
+	libksba-devel \
+	libpcap-devel \
+	libssh \
+	libssh-devel \
+	libuuid-devel \
+	make \
+	net-snmp-agent-libs \
+	net-snmp-devel \
+	net-snmp-libs \
+	net-snmp-utils \
+	openldap-devel \
+	pkgconfig \
+	sqlite-devel \
+	wget \
+	zlib-devel
 
 # STEP 2: Install libgcrypt and libgpg-error
 FROM centos-epel-build AS gcrypt
