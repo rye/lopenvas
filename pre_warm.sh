@@ -15,6 +15,9 @@ fetch_intermediate() {
 	fi
 }
 
+fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.35.tar.gz"
+fetch_intermediate "https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.4.tar.gz"
+
 pushd "$ROOT"
 
 sha256sum -c SHA256SUMS
