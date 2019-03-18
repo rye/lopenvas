@@ -16,8 +16,6 @@ RUN yum install -y \
 	gnutls-devel \
 	gpgme-devel \
 	hiredis-devel \
-	libgcrypt-devel \
-	libgpg-error-devel \
 	libksba-devel \
 	libpcap-devel \
 	libssh \
