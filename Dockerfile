@@ -2,6 +2,17 @@
 FROM centos:7 AS centos-epel-build
 
 RUN yum install -y epel-release
+RUN yum install -y \
+       cmake \
+       curl \
+       file \
+       gcc-c++ \
+       gcc \
+       git \
+       glibc-devel \
+       make \
+       pkgconfig \
+       wget
 
 # STEP 2: Install libgcrypt and libgpg-error
 FROM centos-epel-build AS gcrypt
