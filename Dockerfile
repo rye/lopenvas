@@ -55,7 +55,16 @@ RUN ./configure; make; make install
 # STEP 3: Build CMake from source (latest available on CentOS is 2.18, too out of date)
 FROM gcrypt AS cmake
 
-# STEP 3: Build gvm-libs from source
+ENV CMAKE_ARCHIVE="cmake-3.14.0.tar.gz"
+ADD var/$CMAKE_ARCHIVE /opt
+
+RUN mv /opt/cmake-* /opt/cmake
+WORKDIR /opt/cmake
+RUN ./bootstrap --prefix=/usr/local; make; make install
+
+ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
+
+# STEP 4: Build gvm-libs from source
 FROM cmake AS gvm-libs
 
 # STEP 4: Build openvas-scanner from source
