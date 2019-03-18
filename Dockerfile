@@ -67,7 +67,14 @@ ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/loc
 # STEP 4: Build gvm-libs from source
 FROM cmake AS gvm-libs
 
-# STEP 4: Build openvas-scanner from source
+ENV GVM_LIBS_ARCHIVE="gvm-libs--9.0.3.tar.gz"
+ADD var/$GVM_LIBS_ARCHIVE /opt
+
+RUN mv /opt/gvm-libs-* /opt/gvm-libs
+WORKDIR /opt/gvm-libs
+RUN cmake .; make; make install
+
+# STEP 5: Build openvas-scanner from source
 FROM gvm-libs AS openvas-scanner
 
 # STEP 5: Build gvmd from source
