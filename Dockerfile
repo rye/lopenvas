@@ -87,5 +87,12 @@ RUN cmake .; make; make install
 # STEP 6: Build gvmd from source
 FROM openvas-scanner AS gvmd
 
-# STEP 6: Build gsa from source
+ENV GVMD_ARCHIVE="gvmd-7.0.3.tar.gz"
+ADD var/$GVMD_ARCHIVE /opt
+
+RUN mv /opt/gvmd-* /opt/gvmd
+WORKDIR /opt/gvmd
+RUN cmake .; make; make install
+
+# STEP 7: Build gsa from source
 FROM gvmd AS gsa
