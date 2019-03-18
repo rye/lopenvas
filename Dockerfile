@@ -37,7 +37,22 @@ RUN yum install -y \
 # STEP 2: Install libgcrypt and libgpg-error
 FROM centos-epel-build AS gcrypt
 
-# STEP 2: Build CMake from source (latest available on CentOS is 2.18, too out of date)
+ENV GPG_ERROR_ARCHIVE="libgpg-error-1.35.tar.gz"
+ENV GCRYPT_ARCHIVE="libgcrypt-1.8.4.tar.gz"
+
+ADD ./var/$GPG_ERROR_ARCHIVE /tmp/
+
+RUN mv /tmp/libgpg-error-* /tmp/libgpg-error
+WORKDIR /tmp/libgpg-error
+RUN ./configure; make; make install
+
+ADD ./var/$GCRYPT_ARCHIVE /tmp/
+
+RUN mv /tmp/libgcrypt-* /tmp/libgcrypt
+WORKDIR /tmp/libgcrypt
+RUN ./configure; make; make install
+
+# STEP 3: Build CMake from source (latest available on CentOS is 2.18, too out of date)
 FROM gcrypt AS cmake
 
 # STEP 3: Build gvm-libs from source
