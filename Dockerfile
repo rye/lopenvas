@@ -77,7 +77,14 @@ RUN cmake .; make; make install
 # STEP 5: Build openvas-scanner from source
 FROM gvm-libs AS openvas-scanner
 
-# STEP 5: Build gvmd from source
+ENV OPENVAS_SCANNER_ARCHIVE="openvas-scanner--5.1.3.tar.gz"
+ADD var/$OPENVAS_SCANNER_ARCHIVE /opt
+
+RUN mv /opt/openvas-scanner-* /opt/openvas-scanner
+WORKDIR /opt/openvas-scanner
+RUN cmake .; make; make install
+
+# STEP 6: Build gvmd from source
 FROM openvas-scanner AS gvmd
 
 # STEP 6: Build gsa from source
