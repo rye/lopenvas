@@ -35,20 +35,57 @@ RUN yum install -y \
 # STEP 2: Install libgcrypt and libgpg-error
 FROM centos-epel-build AS gcrypt
 
-ENV GPG_ERROR_ARCHIVE="libgpg-error-1.35.tar.gz"
+ENV ASSUAN_ARCHIVE="libassuan-2.5.3.tar.bz2"
 ENV GCRYPT_ARCHIVE="libgcrypt-1.8.4.tar.gz"
+ENV GNUPG_ARCHIVE="gnupg-2.2.13.tar.bz2"
+ENV GPG_ERROR_ARCHIVE="libgpg-error-1.35.tar.gz"
+ENV GPGME_ARCHIVE="gpgme-1.12.0.tar.bz2"
+ENV KSBA_ARCHIVE="libksba-1.3.5.tar.bz2"
+ENV NPTH_ARCHIVE="npth-1.6.tar.bz2"
+ENV NTBTLS_ARCHIVE="ntbtls-0.1.2.tar.bz2"
 
-ADD ./var/$GPG_ERROR_ARCHIVE /tmp/
+RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/local.conf
+RUN echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local-64.conf
 
+ADD var/$GPG_ERROR_ARCHIVE /tmp/
 RUN mv /tmp/libgpg-error-* /tmp/libgpg-error
 WORKDIR /tmp/libgpg-error
 RUN ./configure; make; make install
 
-ADD ./var/$GCRYPT_ARCHIVE /tmp/
+ADD var/$ASSUAN_ARCHIVE /tmp/
+RUN mv /tmp/libassuan-* /tmp/libassuan
+WORKDIR /tmp/libassuan
+RUN ./configure; make; make install
 
+ADD var/$GCRYPT_ARCHIVE /tmp/
 RUN mv /tmp/libgcrypt-* /tmp/libgcrypt
 WORKDIR /tmp/libgcrypt
 RUN ./configure; make; make install
+
+ADD var/$KSBA_ARCHIVE /tmp/
+RUN mv /tmp/libksba-* /tmp/libksba
+WORKDIR /tmp/libksba
+RUN ./configure; make; make install
+
+ADD var/$NPTH_ARCHIVE /tmp/
+RUN mv /tmp/npth-* /tmp/npth
+WORKDIR /tmp/npth
+RUN ./configure; make; make install
+
+ADD var/$NTBTLS_ARCHIVE /tmp/
+RUN mv /tmp/ntbtls-* /tmp/ntbtls
+WORKDIR /tmp/ntbtls
+RUN ./configure; make; make install
+
+ADD var/$GNUPG_ARCHIVE /tmp/
+RUN mv /tmp/gnupg-* /tmp/gnupg
+WORKDIR /tmp/gnupg
+RUN ./configure; make; make install
+
+ADD var/$GPGME_ARCHIVE /tmp/
+RUN mv /tmp/gpgme-* /tmp/gpgme
+WORKDIR /tmp/gpgme
+RUN ldconfig -v; ./configure; make; make install
 
 # STEP 3: Build CMake from source (latest available on CentOS is 2.18, too out of date)
 FROM gcrypt AS cmake
@@ -95,9 +132,26 @@ RUN cmake .; make; make install
 # STEP 7: Build gsa from source
 FROM gvmd AS gsa
 
+ENV XSLT_ARCHIVE="libxslt-1.1.33.tar.gz"
+ADD var/$XSLT_ARCHIVE /opt
+
+RUN mv /opt/libxslt-* /opt/libxslt
+WORKDIR /opt/libxslt
+RUN ./configure; make; make install
+
 ENV GSA_ARCHIVE="gsa-7.0.3.tar.gz"
 ADD var/$GSA_ARCHIVE /opt
 
 RUN mv /opt/gsa-* /opt/gsa
 WORKDIR /opt/gsa
-RUN cmake .; make; make install
+RUN ldconfig -v; cmake .; make; make install
+
+# STEP 8: Build openvas-smb from sourcen
+#FROM gsa as openvas-smb
+
+#ENV OPENVAS_SMB_ARCHIVE="openvas-smb--1.0.4.tar.gz"
+#ADD var/$OPENVAS_SMB_ARCHIVE /opt
+
+#RUN mv /opt/openvas-smb-* /opt/openvas-smb
+#WORKDIR /opt/openvas-smb
+#RUN cmake .; make; make install
