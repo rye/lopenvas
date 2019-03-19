@@ -14,13 +14,13 @@ RUN yum install -y \
 	glib2-devel \
 	glibc-devel \
 	gnutls-devel \
-	gpgme-devel \
 	hiredis-devel \
-	libksba-devel \
+	libmicrohttpd-devel \
 	libpcap-devel \
 	libssh \
 	libssh-devel \
 	libuuid-devel \
+	libxml2-devel \
 	make \
 	net-snmp-agent-libs \
 	net-snmp-devel \
