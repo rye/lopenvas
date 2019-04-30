@@ -46,7 +46,7 @@ ADD var/$GVM_LIBS_ARCHIVE /opt
 
 RUN mv /opt/gvm-libs-* /opt/gvm-libs
 WORKDIR /opt/gvm-libs
-RUN cmake -D CMAKE_C_FLAGS=-Wno-deprecations .; make; make install
+RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_FLAGS=-Wno-deprecations .; make; make install; make clean
 
 # STEP 3: Build openvas-scanner from source
 FROM gvm-libs AS openvas-scanner
@@ -56,7 +56,7 @@ ADD var/$OPENVAS_SCANNER_ARCHIVE /opt
 
 RUN mv /opt/openvas-scanner-* /opt/openvas-scanner
 WORKDIR /opt/openvas-scanner
-RUN cmake .; make; make install
+RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install; make clean
 
 # STEP 4: Build gvmd from source
 FROM openvas-scanner AS gvmd
@@ -66,7 +66,7 @@ ADD var/$GVMD_ARCHIVE /opt
 
 RUN mv /opt/gvmd-* /opt/gvmd
 WORKDIR /opt/gvmd
-RUN cmake .; make; make install
+RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install; make clean
 
 # STEP 5: Build gsa from source
 FROM gvmd AS gsa
@@ -79,7 +79,7 @@ ADD var/$GSA_ARCHIVE /opt
 
 RUN mv /opt/gsa-* /opt/gsa
 WORKDIR /opt/gsa
-RUN ldconfig; cmake -DCMAKE_BUILD_TYPE=Release .; make; make install
+RUN ldconfig; cmake -DCMAKE_BUILD_TYPE=Release .; make; make install; make clean
 
 # STEP 8: Build openvas-smb from sourcen
 #FROM gsa as openvas-smb
