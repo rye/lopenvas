@@ -59,7 +59,7 @@ WORKDIR /opt/openvas-scanner
 RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install; make clean
 
 # STEP 4: Build gvmd from source
-FROM openvas-scanner AS gvmd
+FROM gvm-libs AS gvmd
 
 ENV GVMD_ARCHIVE="gvmd-8.0.0.tar.gz"
 ADD var/$GVMD_ARCHIVE /opt
@@ -69,7 +69,7 @@ WORKDIR /opt/gvmd
 RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install; make clean
 
 # STEP 5: Build gsa from source
-FROM gvmd AS gsa
+FROM gvm-libs AS gsa
 
 RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -; echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list; apt-get update; apt-get -qy install nodejs
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; apt-get update; apt-get -qy install yarn
