@@ -39,7 +39,7 @@ RUN apt-get update && apt-get -qy install \
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
 
-FROM build-deps AS gvm-libs
+FROM build-deps AS gvm-libs-heavy
 
 ENV GVM_LIBS_ARCHIVE="gvm-libs--10.0.0.tar.gz"
 ENV OPENVAS_SMB_ARCHIVE="openvas-smb--1.0.4.tar.gz"
@@ -54,7 +54,7 @@ RUN mv /opt/openvas-smb-* /opt/openvas-smb
 WORKDIR /opt/openvas-smb
 RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install
 
-FROM gvm-libs AS openvas-scanner
+FROM gvm-libs-heavy AS openvas-scanner-heavy
 
 ENV OPENVAS_SCANNER_ARCHIVE="openvas-scanner--6.0.0.tar.gz"
 ADD var/$OPENVAS_SCANNER_ARCHIVE /opt
@@ -63,7 +63,7 @@ RUN mv /opt/openvas-scanner-* /opt/openvas-scanner
 WORKDIR /opt/openvas-scanner
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
-FROM gvm-libs AS gvmd
+FROM gvm-libs-heavy AS gvmd-heavy
 
 RUN apt-get update && apt-get -qy install \
 	libical-dev \
@@ -76,7 +76,7 @@ RUN mv /opt/gvmd-* /opt/gvmd
 WORKDIR /opt/gvmd
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
-FROM gvm-libs AS gsa
+FROM gvm-libs-heavy AS gsa-heavy
 
 RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get -qy install nodejs
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get -qy install yarn
