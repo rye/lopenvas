@@ -2,18 +2,17 @@ FROM debian:buster-slim AS base
 
 RUN apt-get update && apt-get -qy install \
 	heimdal-multidev \
-	libglib2.0-dev \
-	libgnutls28-dev \
-	libgpgme-dev \
-	libhiredis-dev \
-	libksba-dev \
-	libldap2-dev \
-	libpcap-dev \
-	libpopt-dev \
-	libsasl2-modules-gssapi-heimdal \
-	libsnmp-dev \
-	libssh-dev \
-	libssh2-1-dev
+	libglib2.0-0 \
+	libgnutls30 \
+	libgpgme11 \
+	libhiredis0.14 \
+	libksba8 \
+	libldap-2.4-2 \
+	libpcap0.8 \
+	libpopt0 \
+	libsnmp30 \
+	libssh-4 \
+	libssh2-1
 
 FROM base AS build-deps
 
@@ -26,6 +25,18 @@ RUN apt-get update && apt-get -qy install \
 #	file \
 	gcc-mingw-w64 \
 	git \
+	libglib2.0-dev \
+	libgnutls28-dev \
+	libgpgme-dev \
+	libhiredis-dev \
+	libksba-dev \
+	libksba-mingw-w64-dev \
+	libldap2-dev \
+	libpcap-dev \
+	libpopt-dev \
+	libsnmp-dev \
+	libssh-dev \
+	libssh2-1-dev \
 #	glibc-source \
 #	libgcrypt-dev \
 #	libgpg-error-dev \
