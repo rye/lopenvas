@@ -1,7 +1,6 @@
 FROM debian:buster-slim AS base
 
 RUN apt-get update && apt-get -qy install \
-	gcc-mingw-w64 \
 	heimdal-multidev \
 	libglib2.0-dev \
 	libgnutls28-dev \
@@ -25,6 +24,7 @@ RUN apt-get update && apt-get -qy install \
 	curl \
 #	doxygen \
 #	file \
+	gcc-mingw-w64 \
 	git \
 #	glibc-source \
 #	libgcrypt-dev \
