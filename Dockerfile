@@ -65,6 +65,12 @@ RUN mv /opt/openvas-smb-* /opt/openvas-smb
 WORKDIR /opt/openvas-smb
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
+FROM base AS gvm-libs
+
+COPY --from=gvm-libs-heavy /usr/local/bin/winexe /usr/local/bin/wmic /usr/local/bin/
+COPY --from=gvm-libs-heavy /usr/local/lib/libopenvas_wmi*.so* /usr/local/lib/
+COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so* /usr/local/lib/
+
 FROM gvm-libs-heavy AS openvas-scanner-heavy
 
 ENV OPENVAS_SCANNER_ARCHIVE="openvas-scanner--6.0.0.tar.gz"
