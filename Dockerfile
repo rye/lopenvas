@@ -63,7 +63,7 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_FLAGS=-Wno-deprecations . && ma
 
 RUN mv /opt/openvas-smb-* /opt/openvas-smb
 WORKDIR /opt/openvas-smb
-RUN cmake -D CMAKE_BUILD_TYPE=Release .; make; make install
+RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
 FROM gvm-libs-heavy AS openvas-scanner-heavy
 
