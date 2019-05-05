@@ -80,6 +80,20 @@ RUN mv /opt/openvas-scanner-* /opt/openvas-scanner
 WORKDIR /opt/openvas-scanner
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
+FROM gvm-libs AS openvas-scanner
+
+COPY --from=openvas-scanner-heavy /usr/local/lib/libopenvas* /usr/local/lib/
+COPY --from=openvas-scanner-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
+COPY --from=openvas-scanner-heavy /usr/local/etc/openvas/ /usr/local/etc/
+COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
+COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
+
+FROM gvm-libs AS gvmd-base
+
+RUN apt-get update && apt-get -qy install \
+	libical3 \
+	libsqlite3-0
+
 FROM gvm-libs-heavy AS gvmd-heavy
 
 RUN apt-get update && apt-get -qy install \
@@ -92,6 +106,20 @@ ADD var/$GVMD_ARCHIVE /opt
 RUN mv /opt/gvmd-* /opt/gvmd
 WORKDIR /opt/gvmd
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
+
+FROM gvmd-base AS gvmd
+
+COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
+COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
+COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
+COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
+
+FROM gvm-libs AS gsa-base
+
+RUN apt-get update && apt-get -qy install \
+	libmicrohttpd12 \
+	libxml2
 
 FROM gvm-libs-heavy AS gsa-heavy
 
@@ -108,3 +136,9 @@ ADD var/$GSA_ARCHIVE /opt
 RUN mv /opt/gsa-* /opt/gsa
 WORKDIR /opt/gsa
 RUN ldconfig && cmake -DCMAKE_BUILD_TYPE=Release . && make && make install && make clean
+
+FROM gsa-base AS gsa
+
+COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
+COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
+COPY --from=gsa-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
