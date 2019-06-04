@@ -139,11 +139,12 @@ RUN ldconfig && cmake -DCMAKE_BUILD_TYPE=Release . && make && make install && ma
 
 FROM gsa-base AS gsa
 
+VOLUME ["/usr/local/var/lib/gvm/CA/servercert.pem", "/usr/local/var/lib/gvm/private/CA/serverkey.pem"]
+
 COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
 COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
 COPY --from=gsa-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 
 ADD "./bin/gsad-wrapper.bash" "/bin/gsad"
-VOLUME ["/usr/local/var/lib/gvm/CA/servercert.pem", "/usr/local/var/lib/gvm/private/CA/serverkey.pem"]
 
 ENTRYPOINT ["/bin/gsad"]
