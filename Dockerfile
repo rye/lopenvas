@@ -71,6 +71,8 @@ COPY --from=gvm-libs-heavy /usr/local/bin/winexe /usr/local/bin/wmic /usr/local/
 COPY --from=gvm-libs-heavy /usr/local/lib/libopenvas_wmi*.so* /usr/local/lib/
 COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so* /usr/local/lib/
 
+## TARGET: openvas-scanner
+
 FROM gvm-libs-heavy AS openvas-scanner-heavy
 
 ENV OPENVAS_SCANNER_ARCHIVE="openvas-scanner--6.0.0.tar.gz"
@@ -87,6 +89,8 @@ COPY --from=openvas-scanner-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
 COPY --from=openvas-scanner-heavy /usr/local/etc/openvas/ /usr/local/etc/
 COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
 COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
+
+## TARGET: gvmd
 
 FROM gvm-libs AS gvmd-base
 
@@ -114,6 +118,8 @@ COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
+
+## TARGET: gsad
 
 FROM gvm-libs AS gsa-base
 
