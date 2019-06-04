@@ -94,6 +94,8 @@ COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
 
 FROM gvm-libs AS gvmd-base
 
+RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats
+
 RUN apt-get update && apt-get -qy install \
 	libical3 \
 	libsqlite3-0
@@ -118,6 +120,8 @@ COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
+
+ENTRYPOINT ["/usr/local/bin/gvmd"]
 
 ## TARGET: gsad
 
