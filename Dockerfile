@@ -1,6 +1,6 @@
 FROM debian:buster-slim AS base
 
-RUN apt-get update && apt-get -qy install \
+RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	heimdal-multidev \
 	libglib2.0-0 \
 	libgnutls30 \
@@ -140,7 +140,6 @@ RUN ldconfig && cmake -DCMAKE_BUILD_TYPE=Release . && make && make install && ma
 FROM gsa-base AS gsa
 
 ADD "./bin/gsad-wrapper.bash" "/bin/gsad"
-RUN mkdir -pv /usr/local/var/run
 
 COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
 COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
