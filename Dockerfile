@@ -68,8 +68,8 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 FROM base AS gvm-libs
 
 COPY --from=gvm-libs-heavy /usr/local/bin/winexe /usr/local/bin/wmic /usr/local/bin/
-COPY --from=gvm-libs-heavy /usr/local/lib/libopenvas_wmi*.so* /usr/local/lib/
-COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so* /usr/local/lib/
+COPY --from=gvm-libs-heavy /usr/local/lib/libopenvas_wmi*.so /usr/local/lib/
+COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so /usr/local/lib/
 
 ## TARGET: openvas-scanner
 
@@ -84,11 +84,14 @@ RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
 FROM gvm-libs AS openvas-scanner
 
-COPY --from=openvas-scanner-heavy /usr/local/lib/libopenvas* /usr/local/lib/
+COPY --from=openvas-scanner-heavy /usr/local/lib/libopenvas*.so /usr/local/lib/
 COPY --from=openvas-scanner-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
 COPY --from=openvas-scanner-heavy /usr/local/etc/openvas/ /usr/local/etc/
 COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
 COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
+RUN ldconfig
+
+ENTRYPOINT ["/usr/local/sbin/openvassd"]
 
 ## TARGET: gvmd
 
