@@ -1,6 +1,8 @@
 FROM debian:buster-slim AS base
 
 RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
+	bzip2 \
+	curl \
 	heimdal-multidev \
 	libglib2.0-0 \
 	libgnutls30 \
@@ -12,7 +14,9 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libpopt0 \
 	libsnmp30 \
 	libssh-4 \
-	libssh2-1
+	libssh2-1 \
+	rsync \
+	wget
 
 FROM base AS build-deps
 
