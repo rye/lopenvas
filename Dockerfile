@@ -3,6 +3,7 @@ FROM debian:buster-slim AS base
 RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	bzip2 \
 	curl \
+	file \
 	heimdal-multidev \
 	libglib2.0-0 \
 	libgnutls30 \
@@ -25,8 +26,6 @@ RUN apt-get update && apt-get -qy install \
 	build-essential \
 	cmake \
 	curl \
-#	doxygen \
-#	file \
 	gcc-mingw-w64 \
 	git \
 	libglib2.0-dev \
@@ -41,16 +40,7 @@ RUN apt-get update && apt-get -qy install \
 	libsnmp-dev \
 	libssh-dev \
 	libssh2-1-dev \
-#	glibc-source \
-#	libgcrypt-dev \
-#	libgpg-error-dev \
-#	libsnmp-base \
-#	libuuid1 \
-#	libxslt-dev \
-#	snmp \
 	pkg-config
-#	wget \
-#	zlib1g-dev
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
 
