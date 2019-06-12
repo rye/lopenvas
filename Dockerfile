@@ -152,6 +152,6 @@ COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
 COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
 COPY --from=gsa-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 
-ADD "./bin/gsad-wrapper.bash" "/bin/gsad"
+ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
-ENTRYPOINT ["/bin/gsad"]
+ENTRYPOINT ["docker-entrypoint.sh"]
