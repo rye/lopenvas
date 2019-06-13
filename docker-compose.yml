@@ -4,3 +4,7 @@ version: '3.7'
 services:
   redis:
     image: docker.io/redis:alpine@sha256:2c8839911829aac720d41690edc07c0aff8385294fccd3a892af46d1a83b1ac0
+    command: "/etc/redis.conf"
+    restart: unless-stopped
+    volumes:
+    - ./redis.conf:/etc/redis.conf:ro
