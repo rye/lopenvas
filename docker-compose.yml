@@ -8,3 +8,12 @@ services:
     restart: unless-stopped
     volumes:
     - ./redis.conf:/etc/redis.conf:ro
+    - type: volume
+      source: redis-socket
+      target: /tmp/redis
+
+volumes:
+  redis-socket:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
