@@ -11,6 +11,9 @@ services:
     volumes:
     - ./redis.conf:/etc/redis.conf:ro
     - type: volume
+      source: redis-data
+      target: /data
+    - type: volume
       source: redis-socket
       target: /tmp/redis
 
@@ -73,6 +76,7 @@ networks:
     name: host
 
 volumes:
+  redis-data:
   redis-socket:
     driver_opts:
       type: tmpfs
