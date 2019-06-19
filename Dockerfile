@@ -16,6 +16,7 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libsnmp30 \
 	libssh-4 \
 	libssh2-1 \
+	rrdtool \
 	rsync \
 	wget
 
