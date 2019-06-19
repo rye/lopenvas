@@ -29,6 +29,9 @@ services:
     volumes:
     - ./openvassd.conf:/usr/local/etc/openvas/openvassd.conf:ro
     - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
+    - type: volume
       source: redis-socket
       target: /tmp/redis
 
@@ -42,6 +45,9 @@ services:
     - internal
     volumes:
     - ./gvmd_log.conf:/usr/local/etc/gvm/gvmd_log.conf:ro
+    - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
 
   gsad:
     build:
@@ -58,6 +64,9 @@ services:
     volumes:
     - ./CA/servercert.pem:/usr/local/var/lib/gvm/CA/servercert.pem:ro
     - ./CA/serverkey.pem:/usr/local/var/lib/gvm/private/CA/serverkey.pem:ro
+    - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
 
 networks:
   # The default network is a bridge that connects containers to the outside
@@ -78,6 +87,10 @@ networks:
 volumes:
   redis-data:
   redis-socket:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  usr-local-var-run:
     driver_opts:
       type: tmpfs
       device: tmpfs
