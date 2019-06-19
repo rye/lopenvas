@@ -91,7 +91,7 @@ ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
 
 FROM gvm-libs AS gvmd-base
 
-RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats
+RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats /usr/local/etc/gvm
 
 RUN apt-get update && apt-get -qy install \
 	libical3 \
