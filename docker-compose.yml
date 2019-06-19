@@ -14,6 +14,48 @@ services:
       source: redis-socket
       target: /tmp/redis
 
+  scanner:
+    build:
+      context: .
+      target: openvas-scanner
+    depends_on:
+    - redis
+    networks:
+    - internal
+    - scanning
+    volumes:
+    - ./openvassd.conf:/usr/local/etc/openvas/openvassd.conf:ro
+    - type: volume
+      source: redis-socket
+      target: /tmp/redis
+
+  gvmd:
+    build:
+      context: .
+      target: gvmd
+    depends_on:
+    - scanner
+    networks:
+    - internal
+    volumes:
+    - ./gvmd_log.conf:/usr/local/etc/gvm/gvmd_log.conf:ro
+
+  gsad:
+    build:
+      context: .
+      target: gsad
+    depends_on:
+    - gvmd
+    networks:
+    - default
+    - internal
+    ports:
+    - 127.0.0.1:80:80
+    - 127.0.0.1:443:443
+    volumes:
+    - ./CA/servercert.pem:/usr/local/var/lib/gvm/CA/servercert.pem:ro
+    - ./CA/serverkey.pem:/usr/local/var/lib/gvm/private/CA/serverkey.pem:ro
+
 networks:
   # The default network is a bridge that connects containers to the outside
   # world.  This is used for ingress.
