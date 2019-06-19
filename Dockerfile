@@ -122,13 +122,13 @@ ENTRYPOINT ["/usr/local/bin/gvmd"]
 
 ## TARGET: gsad
 
-FROM gvm-libs AS gsa-base
+FROM gvm-libs AS gsad-base
 
 RUN apt-get update && apt-get -qy install \
 	libmicrohttpd12 \
 	libxml2
 
-FROM gvm-libs-heavy AS gsa-heavy
+FROM gvm-libs-heavy AS gsad-heavy
 
 RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get -qy install nodejs
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get -qy install yarn
@@ -144,13 +144,13 @@ RUN mv /opt/gsa-* /opt/gsa
 WORKDIR /opt/gsa
 RUN ldconfig && cmake -DCMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
-FROM gsa-base AS gsa
+FROM gsad-base AS gsad
 
 VOLUME ["/usr/local/var/lib/gvm/CA/servercert.pem", "/usr/local/var/lib/gvm/private/CA/serverkey.pem"]
 
-COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
-COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
-COPY --from=gsa-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
+COPY --from=gsad-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
+COPY --from=gsad-heavy /usr/local/sbin/gsad /usr/local/sbin/
+COPY --from=gsad-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 
 ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
