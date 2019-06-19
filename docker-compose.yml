@@ -34,6 +34,9 @@ services:
     - type: volume
       source: redis-socket
       target: /tmp/redis
+    - type: volume
+      source: openvas-data
+      target: /usr/local/var/lib/openvas/plugins
 
   gvmd:
     build:
@@ -48,6 +51,9 @@ services:
     - type: volume
       source: usr-local-var-run
       target: /usr/local/var/run
+    - type: volume
+      source: openvas-data
+      target: /usr/local/var/lib/openvas/plugins
 
   gsad:
     build:
@@ -94,3 +100,4 @@ volumes:
     driver_opts:
       type: tmpfs
       device: tmpfs
+  openvas-data:
