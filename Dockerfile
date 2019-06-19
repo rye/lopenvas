@@ -85,7 +85,7 @@ COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/ope
 COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/sbin/openvassd"]
+ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
 
 ## TARGET: gvmd
 
