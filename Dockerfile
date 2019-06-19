@@ -1,6 +1,9 @@
 FROM debian:buster-slim AS base
 
 RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
+	bzip2 \
+	curl \
+	file \
 	heimdal-multidev \
 	libglib2.0-0 \
 	libgnutls30 \
@@ -12,7 +15,10 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libpopt0 \
 	libsnmp30 \
 	libssh-4 \
-	libssh2-1
+	libssh2-1 \
+	rrdtool \
+	rsync \
+	wget
 
 FROM base AS build-deps
 
@@ -21,8 +27,6 @@ RUN apt-get update && apt-get -qy install \
 	build-essential \
 	cmake \
 	curl \
-#	doxygen \
-#	file \
 	gcc-mingw-w64 \
 	git \
 	libglib2.0-dev \
@@ -37,16 +41,7 @@ RUN apt-get update && apt-get -qy install \
 	libsnmp-dev \
 	libssh-dev \
 	libssh2-1-dev \
-#	glibc-source \
-#	libgcrypt-dev \
-#	libgpg-error-dev \
-#	libsnmp-base \
-#	libuuid1 \
-#	libxslt-dev \
-#	snmp \
 	pkg-config
-#	wget \
-#	zlib1g-dev
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
 
@@ -91,13 +86,13 @@ COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/ope
 COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/sbin/openvassd"]
+ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
 
 ## TARGET: gvmd
 
 FROM gvm-libs AS gvmd-base
 
-RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats
+RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats /usr/local/etc/gvm
 
 RUN apt-get update && apt-get -qy install \
 	libical3 \
@@ -121,20 +116,21 @@ FROM gvmd-base AS gvmd
 COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
 COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
-COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
-COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
+COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/
 
-ENTRYPOINT ["/usr/local/bin/gvmd"]
+ENTRYPOINT ["/usr/local/sbin/gvmd", "--foreground"]
 
 ## TARGET: gsad
 
-FROM gvm-libs AS gsa-base
+FROM gvm-libs AS gsad-base
 
 RUN apt-get update && apt-get -qy install \
 	libmicrohttpd12 \
 	libxml2
 
-FROM gvm-libs-heavy AS gsa-heavy
+FROM gvm-libs-heavy AS gsad-heavy
 
 RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get -qy install nodejs
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get -qy install yarn
@@ -150,14 +146,14 @@ RUN mv /opt/gsa-* /opt/gsa
 WORKDIR /opt/gsa
 RUN ldconfig && cmake -DCMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
-FROM gsa-base AS gsa
+FROM gsad-base AS gsad
 
 VOLUME ["/usr/local/var/lib/gvm/CA/servercert.pem", "/usr/local/var/lib/gvm/private/CA/serverkey.pem"]
 
-COPY --from=gsa-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
-COPY --from=gsa-heavy /usr/local/sbin/gsad /usr/local/sbin/
-COPY --from=gsa-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
+COPY --from=gsad-heavy /usr/local/share/gvm/gsad/ /usr/local/share/gvm/gsad/
+COPY --from=gsad-heavy /usr/local/sbin/gsad /usr/local/sbin/
+COPY --from=gsad-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 
-ADD "./bin/gsad-wrapper.bash" "/bin/gsad"
+ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
-ENTRYPOINT ["/bin/gsad"]
+ENTRYPOINT ["docker-entrypoint.sh"]
