@@ -115,8 +115,9 @@ FROM gvmd-base AS gvmd
 COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
 COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
-COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
-COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
+COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/
 
 ENTRYPOINT ["/usr/local/sbin/gvmd", "--foreground"]
 
