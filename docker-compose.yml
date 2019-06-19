@@ -52,6 +52,9 @@ services:
       source: usr-local-var-run
       target: /usr/local/var/run
     - type: volume
+      source: gvm-data
+      target: /usr/local/var/lib/gvm
+    - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins
 
@@ -100,4 +103,5 @@ volumes:
     driver_opts:
       type: tmpfs
       device: tmpfs
+  gvm-data:
   openvas-data:
