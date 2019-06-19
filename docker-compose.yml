@@ -1,0 +1,107 @@
+---
+version: '3.7'
+
+services:
+  redis:
+    image: docker.io/redis:alpine@sha256:2c8839911829aac720d41690edc07c0aff8385294fccd3a892af46d1a83b1ac0
+    command: "/etc/redis.conf"
+    networks:
+    - internal
+    restart: unless-stopped
+    volumes:
+    - ./redis.conf:/etc/redis.conf:ro
+    - type: volume
+      source: redis-data
+      target: /data
+    - type: volume
+      source: redis-socket
+      target: /tmp/redis
+
+  scanner:
+    build:
+      context: .
+      target: openvas-scanner
+    depends_on:
+    - redis
+    networks:
+    - internal
+    - scanning
+    volumes:
+    - ./openvassd.conf:/usr/local/etc/openvas/openvassd.conf:ro
+    - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
+    - type: volume
+      source: redis-socket
+      target: /tmp/redis
+    - type: volume
+      source: openvas-data
+      target: /usr/local/var/lib/openvas/plugins
+
+  gvmd:
+    build:
+      context: .
+      target: gvmd
+    depends_on:
+    - scanner
+    networks:
+    - internal
+    volumes:
+    - ./gvmd_log.conf:/usr/local/etc/gvm/gvmd_log.conf:ro
+    - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
+    - type: volume
+      source: gvm-data
+      target: /usr/local/var/lib/gvm
+    - type: volume
+      source: openvas-data
+      target: /usr/local/var/lib/openvas/plugins
+
+  gsad:
+    build:
+      context: .
+      target: gsad
+    depends_on:
+    - gvmd
+    networks:
+    - default
+    - internal
+    ports:
+    - 127.0.0.1:80:80
+    - 127.0.0.1:443:443
+    volumes:
+    - ./CA/servercert.pem:/usr/local/var/lib/gvm/CA/servercert.pem:ro
+    - ./CA/serverkey.pem:/usr/local/var/lib/gvm/private/CA/serverkey.pem:ro
+    - type: volume
+      source: usr-local-var-run
+      target: /usr/local/var/run
+
+networks:
+  # The default network is a bridge that connects containers to the outside
+  # world.  This is used for ingress.
+  default:
+
+  # The internal network is used solely for container-container communication,
+  # and is sandboxed by the `{ internal: true }` configuration here.
+  # Only those containers which are attached to this network will be able to
+  # communicate with the outside world.
+  internal:
+    internal: true
+
+  scanning:
+    external: true
+    name: host
+
+volumes:
+  redis-data:
+  redis-socket:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  usr-local-var-run:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  gvm-data:
+  openvas-data:
