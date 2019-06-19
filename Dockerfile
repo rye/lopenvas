@@ -118,7 +118,7 @@ COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*data-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*data-sync /usr/local/bin/
 
-ENTRYPOINT ["/usr/local/bin/gvmd"]
+ENTRYPOINT ["/usr/local/sbin/gvmd", "--foreground"]
 
 ## TARGET: gsad
 
