@@ -20,7 +20,7 @@ services:
   scanner:
     build:
       context: .
-      target: openvas-scanner
+      target: openvas
     depends_on:
     - redis
     networks:

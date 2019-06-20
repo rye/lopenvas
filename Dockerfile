@@ -66,24 +66,24 @@ COPY --from=gvm-libs-heavy /usr/local/bin/winexe /usr/local/bin/wmic /usr/local/
 COPY --from=gvm-libs-heavy /usr/local/lib/libopenvas_wmi*.so /usr/local/lib/
 COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so /usr/local/lib/
 
-## TARGET: openvas-scanner
+## TARGET: openvas
 
-FROM gvm-libs-heavy AS openvas-scanner-heavy
+FROM gvm-libs-heavy AS openvas-heavy
 
-ENV OPENVAS_SCANNER_ARCHIVE="openvas-scanner--6.0.0.tar.gz"
-ADD var/$OPENVAS_SCANNER_ARCHIVE /opt
+ENV OPENVAS_ARCHIVE="openvas--6.0.0.tar.gz"
+ADD var/$OPENVAS_ARCHIVE /opt
 
-RUN mv /opt/openvas-scanner-* /opt/openvas-scanner
-WORKDIR /opt/openvas-scanner
+RUN mv /opt/openvas-6* /opt/openvas
+WORKDIR /opt/openvas
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
-FROM gvm-libs AS openvas-scanner
+FROM gvm-libs AS openvas
 
-COPY --from=openvas-scanner-heavy /usr/local/lib/libopenvas*.so /usr/local/lib/
-COPY --from=openvas-scanner-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
-COPY --from=openvas-scanner-heavy /usr/local/etc/openvas/ /usr/local/etc/
-COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
-COPY --from=openvas-scanner-heavy /usr/local/bin/openvas* /usr/local/bin/
+COPY --from=openvas-heavy /usr/local/lib/libopenvas*.so /usr/local/lib/
+COPY --from=openvas-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
+COPY --from=openvas-heavy /usr/local/etc/openvas/ /usr/local/etc/
+COPY --from=openvas-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
+COPY --from=openvas-heavy /usr/local/bin/openvas* /usr/local/bin/
 RUN ldconfig
 
 ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
@@ -116,7 +116,7 @@ FROM gvmd-base AS gvmd
 COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
 COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
-COPY --from=openvas-scanner-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
+COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/
 

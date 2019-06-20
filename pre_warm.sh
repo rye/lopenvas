@@ -18,7 +18,7 @@ fetch_intermediate() {
 fetch_intermediate "https://github.com/greenbone/gsa/archive/v8.0.0.tar.gz" "$ROOT/gsa-8.0.0.tar.gz"
 fetch_intermediate "https://github.com/greenbone/gvm-libs/archive/v10.0.0.tar.gz" "$ROOT/gvm-libs--10.0.0.tar.gz"
 fetch_intermediate "https://github.com/greenbone/gvmd/archive/v8.0.0.tar.gz" "$ROOT/gvmd-8.0.0.tar.gz"
-fetch_intermediate "https://github.com/greenbone/openvas-scanner/archive/v6.0.0.tar.gz" "$ROOT/openvas-scanner--6.0.0.tar.gz"
+fetch_intermediate "https://github.com/greenbone/openvas/archive/v6.0.0.tar.gz" "$ROOT/openvas--6.0.0.tar.gz"
 fetch_intermediate "https://github.com/greenbone/openvas-smb/archive/v1.0.4.tar.gz" "$ROOT/openvas-smb--1.0.4.tar.gz"
 
 pushd "$ROOT"
