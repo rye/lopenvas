@@ -90,8 +90,6 @@ networks:
     internal: true
 
   scanning:
-    external: true
-    name: host
 
 volumes:
   redis-data:
