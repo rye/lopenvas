@@ -157,3 +157,8 @@ COPY --from=gsad-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
 ENTRYPOINT ["docker-entrypoint.sh"]
+
+FROM gvmd-base AS sync
+
+COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
+COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /usr/local/sbin/

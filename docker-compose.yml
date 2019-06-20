@@ -22,6 +22,7 @@ services:
       context: .
       target: openvas
     depends_on:
+    - sync
     - redis
     networks:
     - internal
@@ -76,6 +77,20 @@ services:
     - type: volume
       source: usr-local-var-run
       target: /usr/local/var/run
+
+  # This container is a one-off command, run by `docker-compose run sync`
+  #
+  # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
+  # `greenbone-certdata-sync` commands, and can be called on a schedule.
+  sync:
+    build:
+      context: .
+      target: sync
+    command: sh -c "greenbone-nvt-sync; greenbone-scapdata-sync; greenbone-certdata-sync"
+    volumes:
+    - type: volume
+      source: openvas-data
+      target: /usr/local/var/lib/openvas/plugins
 
 networks:
   # The default network is a bridge that connects containers to the outside
