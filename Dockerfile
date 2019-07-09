@@ -158,7 +158,13 @@ ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-FROM gvmd-base AS sync
+FROM alpine:latest AS sync
 
-COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
-COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
+RUN apk add -U rsync && rm -v /var/spool/cron/crontabs/root
+
+VOLUME /var/spool/cron/crontabs/root
+
+COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /sbin/
+COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /sbin/
+
+CMD crond -f -l 8
