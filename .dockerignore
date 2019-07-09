@@ -1,5 +1,6 @@
 *
 *.log
+!crontab
 !Dockerfile
 !var/
 !bin/

@@ -1,0 +1,5 @@
+# This file should be bind-mounted as a volume into a container running Cron.
+
+# Every hour, on the hour, sleep for up to 30 minutes, then perform synchronization, sleeping up to 5 minutes in between synchs.
+# This ensures that NVTs/SCAPdata is no more than an hour out of date, and also reduces the load on the greenbone folks.
+0 * * * *	sleep $((RANDOM % 1800)) && /sbin/greenbone-nvt-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-scapdata-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-certdata-sync

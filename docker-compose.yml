@@ -78,7 +78,8 @@ services:
       source: usr-local-var-run
       target: /usr/local/var/run
 
-  # This container is a one-off command, run by `docker-compose run sync`
+  # This container runs cron in a container and synchronizes cert data,
+  # etc. on a schedule.
   #
   # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
   # `greenbone-certdata-sync` commands, and can be called on a schedule.
@@ -86,8 +87,9 @@ services:
     build:
       context: .
       target: sync
-    command: sh -c "greenbone-nvt-sync; greenbone-scapdata-sync; greenbone-certdata-sync"
+    stop_signal: SIGKILL
     volumes:
+    - ./crontab:/var/spool/cron/crontabs/root:ro
     - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins
