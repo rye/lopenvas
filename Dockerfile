@@ -47,7 +47,7 @@ ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/loc
 
 FROM build-deps AS gvm-libs-heavy
 
-ENV GVM_LIBS_ARCHIVE="gvm-libs--10.0.0.tar.gz"
+ENV GVM_LIBS_ARCHIVE="gvm-libs--10.0.1.tar.gz"
 ENV OPENVAS_SMB_ARCHIVE="openvas-smb--1.0.4.tar.gz"
 ADD var/$GVM_LIBS_ARCHIVE /opt
 ADD var/$OPENVAS_SMB_ARCHIVE /opt
@@ -70,7 +70,7 @@ COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so /usr/local/lib/
 
 FROM gvm-libs-heavy AS openvas-heavy
 
-ENV OPENVAS_ARCHIVE="openvas--6.0.0.tar.gz"
+ENV OPENVAS_ARCHIVE="openvas--6.0.1.tar.gz"
 ADD var/$OPENVAS_ARCHIVE /opt
 
 RUN mv /opt/openvas-6* /opt/openvas
@@ -104,7 +104,7 @@ RUN apt-get update && apt-get -qy install \
 	libical-dev \
 	libsqlite3-dev
 
-ENV GVMD_ARCHIVE="gvmd-8.0.0.tar.gz"
+ENV GVMD_ARCHIVE="gvmd-8.0.1.tar.gz"
 ADD var/$GVMD_ARCHIVE /opt
 
 RUN mv /opt/gvmd-* /opt/gvmd
@@ -139,7 +139,7 @@ RUN apt-get update && apt-get -qy install \
 	libmicrohttpd-dev \
 	libxml2-dev
 
-ENV GSA_ARCHIVE="gsa-8.0.0.tar.gz"
+ENV GSA_ARCHIVE="gsa-8.0.1.tar.gz"
 ADD var/$GSA_ARCHIVE /opt
 
 RUN mv /opt/gsa-* /opt/gsa
@@ -158,6 +158,7 @@ ADD "./bin/gsad/docker-entrypoint.sh" "/usr/local/bin/"
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
+# TODO this needs to be something else---maybe just a cron base?
 FROM alpine:latest AS sync
 
 RUN apk add -U rsync && rm -v /var/spool/cron/crontabs/root
