@@ -18,7 +18,8 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libssh2-1 \
 	rrdtool \
 	rsync \
-	wget
+	wget \
+	&& rm -rfv /var/lib/apt/lists/*
 
 FROM base AS build-deps
 
@@ -41,7 +42,8 @@ RUN apt-get update && apt-get -qy install \
 	libsnmp-dev \
 	libssh-dev \
 	libssh2-1-dev \
-	pkg-config
+	pkg-config \
+	&& rm -rfv /var/lib/apt/lists/*
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
 
@@ -96,13 +98,15 @@ RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats /usr/local/etc/gvm
 
 RUN apt-get update && apt-get -qy install \
 	libical3 \
-	libsqlite3-0
+	libsqlite3-0 \
+	&& rm -rfv /var/lib/apt/lists/*
 
 FROM gvm-libs-heavy AS gvmd-heavy
 
 RUN apt-get update && apt-get -qy install \
 	libical-dev \
-	libsqlite3-dev
+	libsqlite3-dev \
+	&& rm -rfv /var/lib/apt/lists/*
 
 ENV GVMD_ARCHIVE="gvmd-8.0.1.tar.gz"
 ADD var/$GVMD_ARCHIVE /opt
@@ -128,7 +132,8 @@ FROM gvm-libs AS gsad-base
 
 RUN apt-get update && apt-get -qy install \
 	libmicrohttpd12 \
-	libxml2
+	libxml2 \
+	&& rm -rfv /var/lib/apt/lists/*
 
 FROM gvm-libs-heavy AS gsad-heavy
 
@@ -137,7 +142,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "d
 
 RUN apt-get update && apt-get -qy install \
 	libmicrohttpd-dev \
-	libxml2-dev
+	libxml2-dev \
+	&& rm -rfv /var/lib/apt/lists/*
 
 ENV GSA_ARCHIVE="gsa-8.0.1.tar.gz"
 ADD var/$GSA_ARCHIVE /opt
