@@ -13,6 +13,8 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libldap-2.4-2 \
 	libpcap0.8 \
 	libpopt0 \
+	libpq5 \
+	libpqtypes0 \
 	libsnmp30 \
 	libssh-4 \
 	libssh2-1 \
@@ -39,10 +41,13 @@ RUN apt-get update && apt-get -qy install \
 	libldap2-dev \
 	libpcap-dev \
 	libpopt-dev \
+	libpq-dev \
+	libpqtypes-dev \
 	libsnmp-dev \
 	libssh-dev \
 	libssh2-1-dev \
 	pkg-config \
+	postgresql-server-dev-11 \
 	&& rm -rfv /var/lib/apt/lists/*
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
@@ -113,7 +118,7 @@ ADD var/$GVMD_ARCHIVE /opt
 
 RUN mv /opt/gvmd-* /opt/gvmd
 WORKDIR /opt/gvmd
-RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
+RUN cmake -D BACKEND=POSTGRESQL -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/ -D CMAKE_BUILD_TYPE=Release . -D BACKEND=POSTGRESQL && make && make install && make clean
 
 FROM gvmd-base AS gvmd
 
