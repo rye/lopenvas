@@ -2,7 +2,6 @@
 
 function build_target_to_tag() {
 	docker build --target "$1" --tag "$2" .
-	echo "\a"
 }
 
 VERSION="${VERSION:-latest}"
