@@ -105,14 +105,12 @@ RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats /usr/local/etc/gvm
 
 RUN apt-get update && apt-get -qy install \
 	libical3 \
-	libsqlite3-0 \
 	&& rm -rfv /var/lib/apt/lists/*
 
 FROM gvm-libs-heavy AS gvmd-heavy
 
 RUN apt-get update && apt-get -qy install \
 	libical-dev \
-	libsqlite3-dev \
 	&& rm -rfv /var/lib/apt/lists/*
 
 ENV GVMD_ARCHIVE="gvmd-8.0.1.tar.gz"
