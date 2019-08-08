@@ -15,6 +15,7 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libpopt0 \
 	libpq5 \
 	libpqtypes0 \
+	libradcli4 \
 	libsnmp30 \
 	libssh-4 \
 	libssh2-1 \
@@ -43,6 +44,7 @@ RUN apt-get update && apt-get -qy install \
 	libpopt-dev \
 	libpq-dev \
 	libpqtypes-dev \
+	libradcli-dev \
 	libsnmp-dev \
 	libssh-dev \
 	libssh2-1-dev \
