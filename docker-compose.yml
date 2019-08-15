@@ -18,7 +18,7 @@ services:
       target: /tmp/redis
 
   scanner:
-    image: lopenvas/openvas:latest
+    image: docker.io/lopenvas/openvas:latest
     depends_on:
     - sync
     - redis
@@ -38,7 +38,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gvmd:
-    image: lopenvas/gvmd:latest
+    image: docker.io/lopenvas/gvmd:latest
     depends_on:
     - scanner
     networks:
@@ -56,7 +56,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gsad:
-    image: lopenvas/gsad:latest
+    image: docker.io/lopenvas/gsad:latest
     depends_on:
     - gvmd
     networks:
@@ -78,7 +78,7 @@ services:
   # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
   # `greenbone-certdata-sync` commands, and can be called on a schedule.
   sync:
-    image: lopenvas/sync:latest
+    image: docker.io/lopenvas/sync:latest
     stop_signal: SIGKILL
     volumes:
     - ./crontab:/var/spool/cron/crontabs/root:ro
