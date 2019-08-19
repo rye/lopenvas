@@ -19,9 +19,9 @@ services:
 
   postgres:
     image: lopenvas/postgres
+    restart: unless-stopped
     networks:
     - internal
-    restart: unless-stopped
     environment:
       POSTGRES_DB: gvmd
       POSTGRES_USER: root
@@ -36,6 +36,7 @@ services:
 
   scanner:
     image: docker.io/lopenvas/openvas:latest
+    restart: unless-stopped
     depends_on:
     - sync
     - redis
@@ -95,16 +96,13 @@ services:
       source: usr-local-var-run
       target: /usr/local/var/run
 
-  # This container runs cron in a container and synchronizes cert data,
-  # etc. on a schedule.
+  # This container is a one-off thing that synchronizes cert data.
   #
   # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
   # `greenbone-certdata-sync` commands, and can be called on a schedule.
   sync:
     image: docker.io/lopenvas/sync:latest
-    stop_signal: SIGKILL
     volumes:
-    - ./crontab:/var/spool/cron/crontabs/root:ro
     - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins

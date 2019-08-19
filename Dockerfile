@@ -96,6 +96,15 @@ COPY --from=openvas-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
 COPY --from=openvas-heavy /usr/local/etc/openvas/ /usr/local/etc/
 COPY --from=openvas-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
 COPY --from=openvas-heavy /usr/local/bin/openvas* /usr/local/bin/
+
+RUN apt-get update && apt-get install -qy \
+	iputils-ping \
+	netcat \
+	nmap \
+	tcpdump \
+	traceroute \
+	&& rm -rfv /var/lib/apt/lists/*
+
 RUN ldconfig
 
 ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
@@ -197,11 +206,9 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 # TODO this needs to be something else---maybe just a cron base?
 FROM alpine:latest AS sync
 
-RUN apk add -U rsync && rm -v /var/spool/cron/crontabs/root
-
-VOLUME /var/spool/cron/crontabs/root
+RUN apk add -U rsync
 
 COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /sbin/
 COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /sbin/
 
-CMD crond -f -l 8
+CMD /bin/sh -c "sleep $((RANDOM % 1800)) && /sbin/greenbone-nvt-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-scapdata-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-certdata-sync"
