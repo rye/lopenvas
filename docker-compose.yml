@@ -17,6 +17,23 @@ services:
       source: redis-socket
       target: /tmp/redis
 
+  postgres:
+    image: lopenvas/postgres
+    networks:
+    - internal
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gvmd
+      POSTGRES_USER: root
+    volumes:
+    - ./bin/gvmd/gvmd_tweaks.sql:/docker-entrypoint-initdb.d/0000_setup-gvmd.sql:ro
+    - type: volume
+      source: postgres-data
+      target: /var/lib/postgresql/data
+    - type: volume
+      source: postgres-socket
+      target: /var/run/postgresql
+
   scanner:
     image: docker.io/lopenvas/openvas:latest
     depends_on:
@@ -39,12 +56,17 @@ services:
 
   gvmd:
     image: docker.io/lopenvas/gvmd:latest
+    restart: unless-stopped
     depends_on:
     - scanner
+    - postgres
     networks:
     - internal
     volumes:
     - ./gvmd_log.conf:/usr/local/etc/gvm/gvmd_log.conf:ro
+    - type: volume
+      source: postgres-socket
+      target: /var/run/postgresql
     - type: volume
       source: usr-local-var-run
       target: /usr/local/var/run
@@ -57,6 +79,7 @@ services:
 
   gsad:
     image: docker.io/lopenvas/gsad:latest
+    restart: unless-stopped
     depends_on:
     - gvmd
     networks:
@@ -101,6 +124,11 @@ networks:
   scanning:
 
 volumes:
+  postgres-data:
+  postgres-socket:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
   redis-data:
   redis-socket:
     driver_opts:

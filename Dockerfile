@@ -1,6 +1,7 @@
-FROM debian:buster-slim AS base
+FROM debian:stretch-slim AS base
 
 RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
+	apt-transport-https \
 	bzip2 \
 	curl \
 	file \
@@ -8,7 +9,7 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libglib2.0-0 \
 	libgnutls30 \
 	libgpgme11 \
-	libhiredis0.14 \
+	libhiredis0.13 \
 	libksba8 \
 	libldap-2.4-2 \
 	libpcap0.8 \
@@ -21,6 +22,7 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libssh2-1 \
 	rrdtool \
 	rsync \
+	uuid-runtime \
 	wget \
 	&& rm -rfv /var/lib/apt/lists/*
 
@@ -49,7 +51,8 @@ RUN apt-get update && apt-get -qy install \
 	libssh-dev \
 	libssh2-1-dev \
 	pkg-config \
-	postgresql-server-dev-11 \
+	postgresql-server-dev-all \
+	uuid-dev \
 	&& rm -rfv /var/lib/apt/lists/*
 
 ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig
@@ -104,7 +107,7 @@ FROM gvm-libs AS gvmd-base
 RUN mkdir -pv /usr/local/share/gvm/gvmd/report_formats /usr/local/etc/gvm
 
 RUN apt-get update && apt-get -qy install \
-	libical3 \
+	libical2 \
 	&& rm -rfv /var/lib/apt/lists/*
 
 FROM gvm-libs-heavy AS gvmd-heavy
@@ -118,7 +121,7 @@ ADD var/$GVMD_ARCHIVE /opt
 
 RUN mv /opt/gvmd-* /opt/gvmd
 WORKDIR /opt/gvmd
-RUN cmake -D BACKEND=POSTGRESQL -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/ -D CMAKE_BUILD_TYPE=Release . -D BACKEND=POSTGRESQL && make && make install && make clean
+RUN cmake -D BACKEND=POSTGRESQL -D PostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/ -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean && sed -i 's|LOG_CMD="logger -s -t $SCRIPT_NAME"|LOG_CMD="echo"|g' /usr/local/sbin/gvm-migrate-to-postgres
 
 FROM gvmd-base AS gvmd
 
@@ -128,8 +131,30 @@ COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
 COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/
+COPY --from=gvmd-heavy /usr/local/lib/libgvm-pg-* /usr/local/lib/
 
-ENTRYPOINT ["/usr/local/sbin/gvmd", "--foreground"]
+ADD "./bin/gvmd/docker-entrypoint.sh" "/usr/local/bin/"
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+## TARGET: gvmd-db
+
+FROM postgres:9.6 AS gvmd-db
+
+RUN apt-get update \
+	&& apt-get -qy install \
+	libglib2.0-0 \
+	libgpgme11 \
+	libhiredis0.13 \
+	libical2 \
+	libradcli4 \
+	libssh-4 \
+	libssh2-1 \
+	&& rm -rfv /var/lib/apt/lists/*
+
+COPY --from=gvmd-heavy /usr/local/lib /usr/local/lib/
+
+RUN ldconfig -v
 
 ## TARGET: gsad
 
@@ -142,7 +167,7 @@ RUN apt-get update && apt-get -qy install \
 
 FROM gvm-libs-heavy AS gsad-heavy
 
-RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get -qy install nodejs
+RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && echo "deb https://deb.nodesource.com/node_12.x stretch main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get -qy install nodejs
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get -qy install yarn
 
 RUN apt-get update && apt-get -qy install \

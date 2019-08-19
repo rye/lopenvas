@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -o pipefail
+
+__LOGS_PID=""
+
+function watch_logs() {
+	mkdir -pv "/usr/local/var/log/openvas/" \
+		&& touch "/usr/local/var/log/openvas/openvasmd.log"
+
+	tail -f "/usr/local/var/log/openvas/openvasmd.log" &
+
+	__LOGS_PID="$!"
+}
+
+function handle_interrupt() {
+	for pid in "$__LOGS_PID";
+	do
+		kill "$pid"
+	done
+
+	exit 0
+}
+
+function setup() {
+	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
+	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/openvasmd.log"
+
+	gvmd-pg --migrate
+}
+
+trap handle_interrupt INT TERM
+
+setup && watch_logs & gvmd-pg --foreground "$@" || >&2 echo "Something failed; bailing... Last few lines of /usr/local/var/log/openvas/openvasmd.log: $(tail /usr/local/var/log/openvas/openvasmd.log)"
