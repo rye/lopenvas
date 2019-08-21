@@ -11,6 +11,16 @@ Using multi-stage builds, we try to avoid including cruft in the final Docker im
 
 Support for versions other than the latest is out-of-scope, however migratory functionality will hopefully be preserved between releases with minimal effort.
 
+## Availability
+
+For now, this package is available only on the GitHub Package Registry, under the following tags:
+
+- `docker.pkg.github.com/rye/lopenvas/gvmd`
+- `docker.pkg.github.com/rye/lopenvas/gsad`
+- `docker.pkg.github.com/rye/lopenvas/openvas`
+- `docker.pkg.github.com/rye/lopenvas/sync`
+- `docker.pkg.github.com/rye/lopenvas/postgres`
+
 ## Local development
 
 To hack on this locally, you'll need to first run the `./pre_warm.sh` file at the root of the project.
