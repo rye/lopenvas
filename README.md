@@ -1,18 +1,22 @@
-# openvas
+# lopenvas
 
-This repository contains a build of the OpenVAS/GVM project.  It is intended to
-be deployed on any network which would benefit from it and that has Docker.
+>What even is that name?
 
-## Setup
+Good question.
 
-First, run `./pre_warm.sh` which can be found at the root of the project.
-Ensure that the `SHA256SUMS` are all listed as `OK`!  (You will need the `wget`
-and `sha256sum` commands to get there.)
+## Introduction
 
-Then, all you need is `docker build` and you're (hopefully) off to the races!
+`lopenvas` is a dockerized OpenVAS installation that aims to be as slim as possible.
+Using multi-stage builds, we try to avoid including cruft in the final Docker images, and we also try to separate the components of the system as much as possible while still preserving functionality.
 
-### Why pre-warm?
+Support for versions other than the latest is out-of-scope, however migratory functionality will hopefully be preserved between releases with minimal effort.
 
-We download a lot of .tar.gz archives, and doing this repetitively is bad
-practice.  This allows for some semblance of a reproducible build, and gives
-massive speed benefits after the first run.
+## Local development
+
+To hack on this locally, you'll need to first run the `./pre_warm.sh` file at the root of the project.
+This downloads the release artifacts from GitHub so that the Docker build properly has them.
+
+## License
+
+The `lopenvas`-related source code (which is found in this repository and consists primarily of build and deployment scripts) is written by me, however the actual OpenVAS/GSA/GVM source code is the intellectual property of Greenbone Networks, GmbH.
+The built images contain this source code, and hence are subject to the license for the Greenbone-copyrighted software.
