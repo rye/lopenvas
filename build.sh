@@ -10,9 +10,9 @@ function retag() {
 
 VERSION="${VERSION:-latest}"
 
-build_target_to_tag "base" "docker.pkg.github.com/rye/lopenvas/base:${VERSION}" && \
-build_target_to_tag "sync" "docker.pkg.github.com/rye/lopenvas/sync:${VERSION}" && \
-build_target_to_tag "openvas" "docker.pkg.github.com/rye/lopenvas/openvas:${VERSION}" && \
-build_target_to_tag "gvmd" "docker.pkg.github.com/rye/lopenvas/gvmd:${VERSION}" && \
-build_target_to_tag "gvmd-db" "docker.pkg.github.com/rye/lopenvas/postgres:${VERSION}" && \
-build_target_to_tag "gsad" "docker.pkg.github.com/rye/lopenvas/gsad:${VERSION}"
+build_target_to_tag "base" "docker.io/kryestofer/lopenvas-base:${VERSION}" && \
+build_target_to_tag "sync" "docker.io/kryestofer/lopenvas-sync:${VERSION}" && \
+build_target_to_tag "openvas" "docker.io/kryestofer/lopenvas-openvas:${VERSION}" && \
+build_target_to_tag "gvmd" "docker.io/kryestofer/lopenvas-gvmd:${VERSION}" && \
+build_target_to_tag "gvmd-db" "docker.io/kryestofer/lopenvas-postgres:${VERSION}" && \
+build_target_to_tag "gsad" "docker.io/kryestofer/lopenvas-gsad:${VERSION}"

@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   redis:
-    image: docker.io/redis:alpine@sha256:2c8839911829aac720d41690edc07c0aff8385294fccd3a892af46d1a83b1ac0
+    image: docker.io/redis:alpine
     command: "/etc/redis.conf"
     networks:
     - internal
@@ -18,7 +18,7 @@ services:
       target: /tmp/redis
 
   postgres:
-    image: docker.pkg.github.com/rye/lopenvas/postgres:latest
+    image: docker.io/kryestofer/lopenvas-postgres:latest
     restart: unless-stopped
     networks:
     - internal
@@ -35,7 +35,7 @@ services:
       target: /var/run/postgresql
 
   scanner:
-    image: docker.pkg.github.com/rye/lopenvas/openvas:latest
+    image: docker.io/kryestofer/lopenvas-openvas:latest
     restart: unless-stopped
     depends_on:
     - sync
@@ -56,7 +56,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gvmd:
-    image: docker.pkg.github.com/rye/lopenvas/gvmd:latest
+    image: docker.io/kryestofer/lopenvas-gvmd:latest
     restart: unless-stopped
     depends_on:
     - scanner
@@ -79,7 +79,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gsad:
-    image: docker.pkg.github.com/rye/lopenvas/gsad:latest
+    image: docker.io/kryestofer/lopenvas-gsad:latest
     restart: unless-stopped
     depends_on:
     - gvmd
@@ -101,7 +101,7 @@ services:
   # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
   # `greenbone-certdata-sync` commands, and can be called on a schedule.
   sync:
-    image: docker.pkg.github.com/rye/lopenvas/sync:latest
+    image: docker.io/kryestofer/lopenvas-sync:latest
     volumes:
     - type: volume
       source: openvas-data
