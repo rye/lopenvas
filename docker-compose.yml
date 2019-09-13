@@ -18,7 +18,7 @@ services:
       target: /tmp/redis
 
   postgres:
-    image: docker.io/kryestofer/lopenvas-postgres:latest
+    image: lopenvas-postgres:latest
     restart: unless-stopped
     networks:
     - internal
@@ -35,7 +35,7 @@ services:
       target: /var/run/postgresql
 
   scanner:
-    image: docker.io/kryestofer/lopenvas-openvas:latest
+    image: lopenvas-openvas:latest
     restart: unless-stopped
     depends_on:
     - sync
@@ -56,7 +56,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gvmd:
-    image: docker.io/kryestofer/lopenvas-gvmd:latest
+    image: lopenvas-gvmd:latest
     restart: unless-stopped
     depends_on:
     - scanner
@@ -79,7 +79,7 @@ services:
       target: /usr/local/var/lib/openvas/plugins
 
   gsad:
-    image: docker.io/kryestofer/lopenvas-gsad:latest
+    image: lopenvas-gsad:latest
     restart: unless-stopped
     depends_on:
     - gvmd
@@ -101,7 +101,7 @@ services:
   # It calls the `greenbone-nvt-sync`, `greenbone-scapdata-sync`, and
   # `greenbone-certdata-sync` commands, and can be called on a schedule.
   sync:
-    image: docker.io/kryestofer/lopenvas-sync:latest
+    image: lopenvas-sync:latest
     volumes:
     - type: volume
       source: openvas-data
