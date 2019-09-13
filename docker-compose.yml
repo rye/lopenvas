@@ -87,8 +87,8 @@ services:
     - default
     - internal
     ports:
-    - 127.0.0.1:80:80
-    - 127.0.0.1:443:443
+    - 0.0.0.0:80:80
+    - 0.0.0.0:443:443
     volumes:
     - ./CA/servercert.pem:/usr/local/var/lib/gvm/CA/servercert.pem:ro
     - ./CA/serverkey.pem:/usr/local/var/lib/gvm/private/CA/serverkey.pem:ro
