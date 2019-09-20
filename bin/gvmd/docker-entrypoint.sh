@@ -26,7 +26,7 @@ function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
 	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/openvasmd.log"
 
-	gvmd-pg --migrate
+	gvmd-pg --migrate --max-ips-per-target=65536
 }
 
 trap handle_interrupt INT TERM
