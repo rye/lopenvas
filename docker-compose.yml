@@ -104,6 +104,9 @@ services:
     image: lopenvas-sync:latest
     volumes:
     - type: volume
+      source: gvm-data
+      target: /usr/local/var/lib/gvm
+    - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins
 
