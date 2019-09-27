@@ -6,6 +6,7 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	curl \
 	file \
 	heimdal-multidev \
+	iputils-ping \
 	libglib2.0-0 \
 	libgnutls30 \
 	libgpgme11 \
@@ -98,7 +99,6 @@ COPY --from=openvas-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /
 COPY --from=openvas-heavy /usr/local/bin/openvas* /usr/local/bin/
 
 RUN apt-get update && apt-get install -qy \
-	iputils-ping \
 	netcat \
 	nmap \
 	tcpdump \
