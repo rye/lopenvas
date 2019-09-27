@@ -136,7 +136,7 @@ FROM gvmd-base AS gvmd
 
 COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
 COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
-COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/
+COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/gvm/
 COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/

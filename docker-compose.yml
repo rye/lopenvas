@@ -75,9 +75,6 @@ services:
       source: gvm-data
       target: /usr/local/var/lib/gvm
     - type: volume
-      source: gvm-reports
-      target: /usr/local/share/gvmd/report_formats
-    - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins
 
@@ -95,9 +92,6 @@ services:
     volumes:
     - ./CA/servercert.pem:/usr/local/var/lib/gvm/CA/servercert.pem:ro
     - ./CA/serverkey.pem:/usr/local/var/lib/gvm/private/CA/serverkey.pem:ro
-    - type: volume
-      source: gvm-reports
-      target: /usr/local/share/gvmd/report_formats
     - type: volume
       source: usr-local-var-run
       target: /usr/local/var/run
@@ -145,6 +139,5 @@ volumes:
     driver_opts:
       type: tmpfs
       device: tmpfs
-  gvm-reports:
   gvm-data:
   openvas-data:
