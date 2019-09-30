@@ -63,6 +63,7 @@ services:
     - postgres
     networks:
     - internal
+    - default
     volumes:
     - ./gvmd_log.conf:/usr/local/etc/gvm/gvmd_log.conf:ro
     - type: volume
