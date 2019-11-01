@@ -24,6 +24,7 @@ fetch_intermediate "https://github.com/greenbone/gvmd/archive/v9.0.0.tar.gz" "$R
 fetch_intermediate "https://github.com/greenbone/openvas/archive/v6.0.1.tar.gz" "$ROOT/openvas--6.0.1.tar.gz"
 fetch_intermediate "https://github.com/greenbone/openvas/archive/v7.0.0.tar.gz" "$ROOT/openvas--7.0.0.tar.gz"
 fetch_intermediate "https://github.com/greenbone/openvas-smb/archive/v1.0.4.tar.gz" "$ROOT/openvas-smb--1.0.4.tar.gz"
+fetch_intermediate "https://github.com/greenbone/openvas-smb/archive/v1.0.5.tar.gz" "$ROOT/openvas-smb--1.0.5.tar.gz"
 
 pushd "$ROOT"
 
