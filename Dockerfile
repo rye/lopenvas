@@ -60,8 +60,8 @@ ENV PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/loc
 
 FROM build-deps AS gvm-libs-heavy
 
-ENV GVM_LIBS_ARCHIVE="gvm-libs--10.0.1.tar.gz"
-ENV OPENVAS_SMB_ARCHIVE="openvas-smb--1.0.4.tar.gz"
+ENV GVM_LIBS_ARCHIVE="gvm-libs--11.0.0.tar.gz"
+ENV OPENVAS_SMB_ARCHIVE="openvas-smb--1.0.5.tar.gz"
 ADD var/$GVM_LIBS_ARCHIVE /opt
 ADD var/$OPENVAS_SMB_ARCHIVE /opt
 
@@ -83,10 +83,10 @@ COPY --from=gvm-libs-heavy /usr/local/lib/libgvm_*.so /usr/local/lib/
 
 FROM gvm-libs-heavy AS openvas-heavy
 
-ENV OPENVAS_ARCHIVE="openvas--6.0.1.tar.gz"
+ENV OPENVAS_ARCHIVE="openvas--7.0.0.tar.gz"
 ADD var/$OPENVAS_ARCHIVE /opt
 
-RUN mv /opt/openvas-6* /opt/openvas
+RUN mv /opt/openvas-7* /opt/openvas
 WORKDIR /opt/openvas
 RUN cmake -D CMAKE_BUILD_TYPE=Release . && make && make install && make clean
 
@@ -95,7 +95,7 @@ FROM gvm-libs AS openvas
 COPY --from=openvas-heavy /usr/local/lib/libopenvas*.so /usr/local/lib/
 COPY --from=openvas-heavy /usr/local/var/log/gvm/ /usr/local/var/log/
 COPY --from=openvas-heavy /usr/local/etc/openvas/ /usr/local/etc/
-COPY --from=openvas-heavy /usr/local/sbin/greenbone* /usr/local/sbin/openvassd /usr/local/sbin/
+COPY --from=openvas-heavy /usr/local/bin/greenbone* /usr/local/sbin/openvas /usr/local/sbin/
 COPY --from=openvas-heavy /usr/local/bin/openvas* /usr/local/bin/
 
 RUN apt-get update && apt-get install -qy \
@@ -126,7 +126,7 @@ RUN apt-get update && apt-get -qy install \
 	libical-dev \
 	&& rm -rfv /var/lib/apt/lists/*
 
-ENV GVMD_ARCHIVE="gvmd-8.0.1.tar.gz"
+ENV GVMD_ARCHIVE="gvmd-9.0.0.tar.gz"
 ADD var/$GVMD_ARCHIVE /opt
 
 RUN mv /opt/gvmd-* /opt/gvmd
@@ -138,7 +138,7 @@ FROM gvmd-base AS gvmd
 COPY --from=gvmd-heavy /usr/local/var/lib/gvm/ /usr/local/var/lib/
 COPY --from=gvmd-heavy /usr/local/etc/gvm/ /usr/local/etc/gvm/
 COPY --from=gvmd-heavy /usr/local/share/gvm/ /usr/local/share/gvm/
-COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /usr/local/sbin/
+COPY --from=openvas-heavy /usr/local/bin/greenbone-nvt-sync /usr/local/bin/
 COPY --from=gvmd-heavy /usr/local/sbin/gvm* /usr/local/sbin/greenbone-*-sync /usr/local/sbin/
 COPY --from=gvmd-heavy /usr/local/bin/gvm* /usr/local/bin/greenbone-*-sync /usr/local/bin/
 COPY --from=gvmd-heavy /usr/local/lib/libgvm-pg-* /usr/local/lib/
@@ -185,7 +185,7 @@ RUN apt-get update && apt-get -qy install \
 	libxml2-dev \
 	&& rm -rfv /var/lib/apt/lists/*
 
-ENV GSA_ARCHIVE="gsa-8.0.1.tar.gz"
+ENV GSA_ARCHIVE="gsa-9.0.0.tar.gz"
 ADD var/$GSA_ARCHIVE /opt
 
 RUN mv /opt/gsa-* /opt/gsa
@@ -209,7 +209,7 @@ FROM alpine:latest AS sync
 
 RUN apk add -U rsync
 
-COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /sbin/
-COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /sbin/
+COPY --from=openvas-heavy /usr/local/bin/greenbone-nvt-sync /bin/
+COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /bin/
 
-CMD /bin/sh -c "/sbin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /sbin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /sbin/greenbone-certdata-sync"
+CMD /bin/sh -c "/bin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /bin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /bin/greenbone-certdata-sync"
