@@ -31,6 +31,9 @@ function setup() {
 		if ping -c 1 "$SENDMAIL_RELAY" >/dev/null;
 		then
 			# Here we have a valid SMTP relay that is responding to ping.
+			# So we configure it into the configuration file.
+
+			sed -i.bak "s|^DS.*$|DS${SENDMAIL_RELAY}|g" /etc/mail/sendmail.cf
 		else
 			>&2 echo "Failed to reach configured SMTP relay."
 
