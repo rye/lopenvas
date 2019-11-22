@@ -26,6 +26,13 @@ function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
 	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/openvasmd.log"
 
+	if [ -z "$SENDMAIL_RELAY" ];
+	then
+		>&2 echo "Sendmail relay configured: ${SENDMAIL_RELAY}"
+	else
+		>&2 echo "Sendmail relay not configured."
+	fi
+
 	gvmd-pg --migrate
 }
 
