@@ -26,6 +26,12 @@ function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
 	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/openvasmd.log"
 
+	if ! grep -q "^DS" /etc/mail/sendmail.cf;
+	then
+		# A line matching "^DS" was not found; insert one.
+		echo "DSsmtp-relay.gmail.com" | tee -a /etc/mail.sendmail.cf
+	fi
+
 	if [ -z "$SENDMAIL_RELAY" ];
 	then
 		if ping -c 1 "$SENDMAIL_RELAY" >/dev/null;
