@@ -56,6 +56,8 @@ services:
   gvmd:
     image: lopenvas-gvmd:latest
     restart: unless-stopped
+    env_file:
+    - smtp.env
     depends_on:
     - scanner
     - postgres
