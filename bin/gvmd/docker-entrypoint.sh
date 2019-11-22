@@ -28,7 +28,14 @@ function setup() {
 
 	if [ -z "$SENDMAIL_RELAY" ];
 	then
-		>&2 echo "Sendmail relay configured: ${SENDMAIL_RELAY}"
+		if ping -c 1 "$SENDMAIL_RELAY" >/dev/null;
+		then
+			# Here we have a valid SMTP relay that is responding to ping.
+		else
+			>&2 echo "Failed to reach configured SMTP relay."
+
+			exit 1
+		fi
 	else
 		>&2 echo "Sendmail relay not configured."
 	fi
