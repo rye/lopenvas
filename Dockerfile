@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -qy \
 
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/sbin/openvassd", "--foreground"]
+ENTRYPOINT ["/usr/local/sbin/openvas", "--foreground"]
 
 ## TARGET: gvmd
 
