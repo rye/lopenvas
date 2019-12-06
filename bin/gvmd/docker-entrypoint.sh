@@ -2,13 +2,15 @@
 
 set -o pipefail
 
+LOG_FILE="/usr/local/var/log/openvas/openvasmd.log"
+
 __LOGS_PID=""
 
 function watch_logs() {
 	mkdir -pv "/usr/local/var/log/openvas/" \
-		&& touch "/usr/local/var/log/openvas/openvasmd.log"
+		&& touch "$LOG_FILE"
 
-	tail -f "/usr/local/var/log/openvas/openvasmd.log" &
+	tail -f "$LOG_FILE" &
 
 	__LOGS_PID="$!"
 }
@@ -24,7 +26,7 @@ function handle_interrupt() {
 
 function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
-	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/openvasmd.log"
+	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/$LOG_FILE"
 
 	gvmd-pg --migrate
 }
