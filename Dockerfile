@@ -212,4 +212,4 @@ RUN apk add -U rsync
 COPY --from=openvas-heavy /usr/local/sbin/greenbone-nvt-sync /sbin/
 COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /sbin/
 
-CMD /bin/sh -c "sleep $((RANDOM % 1800)) && /sbin/greenbone-nvt-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-scapdata-sync && sleep $((RANDOM % 300)) && /sbin/greenbone-certdata-sync"
+CMD /bin/sh -c "/sbin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /sbin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /sbin/greenbone-certdata-sync"
