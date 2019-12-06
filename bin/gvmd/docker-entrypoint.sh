@@ -28,9 +28,9 @@ function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
 	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/$LOG_FILE"
 
-	gvmd-pg --migrate
+	gvmd --migrate
 }
 
 trap handle_interrupt INT TERM
 
-setup && watch_logs & gvmd-pg --foreground --max-ips-per-target=65536 "$@" || >&2 echo "Something failed; bailing... Last few lines of /usr/local/var/log/openvas/openvasmd.log: $(tail /usr/local/var/log/openvas/openvasmd.log)"
+setup && watch_logs & gvmd --foreground --max-ips-per-target=65536 "$@" || >&2 echo "Something failed; bailing... Last few lines of ${LOG_FILE}: $(tail $LOG_FILE)"
