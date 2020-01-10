@@ -113,7 +113,7 @@ RUN apt-get update && apt-get install -qy \
 
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/bin/ospd-openvas", "--log-level", "DEBUG", "--log-file", "/usr/local/var/log/ospd-openvas.log"]
+ENTRYPOINT ["/usr/local/bin/ospd-openvas", "--log-level", "DEBUG", "--foreground"]
 
 ## TARGET: gvmd
 
