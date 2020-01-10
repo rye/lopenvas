@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -qy \
 
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/sbin/openvas", "--foreground"]
+ENTRYPOINT ["/usr/local/sbin/openvas"]
 
 ## TARGET: gvmd
 
@@ -211,5 +211,7 @@ RUN apk add -U rsync
 
 COPY --from=openvas-heavy /usr/local/bin/greenbone-nvt-sync /bin/
 COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /bin/
+
+USER bin
 
 CMD /bin/sh -c "/bin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /bin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /bin/greenbone-certdata-sync"
