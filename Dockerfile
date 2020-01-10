@@ -21,6 +21,8 @@ RUN mkdir -pv /usr/local/var/run && apt-get update && apt-get -qy install \
 	libsnmp30 \
 	libssh-4 \
 	libssh2-1 \
+	python3 \
+	python3-pip \
 	rrdtool \
 	rsync \
 	uuid-runtime \
@@ -98,6 +100,10 @@ COPY --from=openvas-heavy /usr/local/etc/openvas/ /usr/local/etc/
 COPY --from=openvas-heavy /usr/local/bin/greenbone* /usr/local/sbin/openvas /usr/local/sbin/
 COPY --from=openvas-heavy /usr/local/bin/openvas* /usr/local/bin/
 
+RUN pip3 install \
+	'ospd==2.0.0' \
+	'ospd-openvas==1.0.0'
+
 RUN apt-get update && apt-get install -qy \
 	netcat \
 	nmap \
@@ -107,7 +113,7 @@ RUN apt-get update && apt-get install -qy \
 
 RUN ldconfig
 
-ENTRYPOINT ["/usr/local/sbin/openvas"]
+ENTRYPOINT ["/usr/local/bin/ospd-openvas", "--log-level", "DEBUG", "--log-file", "/usr/local/var/log/ospd-openvas.log"]
 
 ## TARGET: gvmd
 
