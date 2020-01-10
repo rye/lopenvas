@@ -15,7 +15,7 @@ services:
       target: /data
     - type: volume
       source: redis-socket
-      target: /tmp/redis
+      target: /run/redis
 
   postgres:
     image: lopenvas-postgres:latest
@@ -48,7 +48,7 @@ services:
       target: /usr/local/var/run
     - type: volume
       source: redis-socket
-      target: /tmp/redis
+      target: /run/redis
     - type: volume
       source: openvas-data
       target: /usr/local/var/lib/openvas/plugins

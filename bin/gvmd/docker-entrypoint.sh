@@ -26,7 +26,7 @@ function handle_interrupt() {
 
 function setup() {
 	mkdir -pv "/usr/local/var/lib/gvm/gvmd/gnupg"
-	mkdir -pv "/usr/local/var/log/openvas/" && touch "/usr/local/var/log/openvas/$LOG_FILE"
+	mkdir -pv "/usr/local/var/log/openvas/" && touch "$LOG_FILE"
 
 	gvmd --migrate
 }
