@@ -47,6 +47,9 @@ services:
       source: usr-local-var-run
       target: /usr/local/var/run
     - type: volume
+      source: ospd-socket
+      target: /var/run/ospd
+    - type: volume
       source: redis-socket
       target: /run/redis
     - type: volume
@@ -67,6 +70,9 @@ services:
     - type: volume
       source: postgres-socket
       target: /var/run/postgresql
+    - type: volume
+      source: ospd-socket
+      target: /var/run/ospd
     - type: volume
       source: usr-local-var-run
       target: /usr/local/var/run
@@ -133,6 +139,10 @@ volumes:
       type: tmpfs
       device: tmpfs
   usr-local-var-run:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  ospd-socket:
     driver_opts:
       type: tmpfs
       device: tmpfs
