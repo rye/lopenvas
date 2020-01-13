@@ -218,6 +218,4 @@ RUN apk add -U rsync
 COPY --from=openvas-heavy /usr/local/bin/greenbone-nvt-sync /bin/
 COPY --from=gvmd-heavy /usr/local/sbin/greenbone-*-sync /bin/
 
-USER bin
-
-CMD /bin/sh -c "/bin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /bin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /bin/greenbone-certdata-sync"
+CMD /bin/sh -c "mkdir -pv /usr/local/var/lib/gvm/cert-data /usr/local/var/lib/gvm/scap-data /usr/local/var/lib/openvas/plugins && chown -R nobody:nobody /usr/local/var/lib/gvm/cert-data /usr/local/var/lib/gvm/scap-data /usr/local/var/lib/openvas/plugins && su -s /bin/sh - nobody /bin/sh -c \"/bin/greenbone-nvt-sync && sleep $((RANDOM % 30)) && /bin/greenbone-scapdata-sync && sleep $((RANDOM % 30)) && /bin/greenbone-certdata-sync\""
