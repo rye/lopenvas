@@ -33,4 +33,4 @@ function setup() {
 
 trap handle_interrupt INT TERM
 
-setup && watch_logs & gvmd --foreground --max-ips-per-target=65536 "$@" || >&2 echo "Something failed; bailing... Last few lines of ${LOG_FILE}: $(tail $LOG_FILE)"
+setup && watch_logs & gvmd --foreground --osp-vt-update=/var/run/ospd/ospd.sock --max-ips-per-target=65536 "$@" || >&2 echo "Something failed; bailing... Last few lines of ${LOG_FILE}: $(tail $LOG_FILE)"
